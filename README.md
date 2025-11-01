@@ -17,10 +17,12 @@
 VSCode에서 실행하기 전에 다음 프로그램들이 설치되어 있어야 합니다:
 
 1. **Node.js** (v18 이상)
+
    - [https://nodejs.org/](https://nodejs.org/) 에서 다운로드
    - 설치 확인: 터미널에서 `node --version` 실행
 
 2. **npm** (Node.js와 함께 설치됨)
+
    - 설치 확인: 터미널에서 `npm --version` 실행
 
 3. **Visual Studio Code**
@@ -37,6 +39,7 @@ VSCode에서 실행하기 전에 다음 프로그램들이 설치되어 있어�
 #### 2단계: 터미널 열기
 
 VSCode에서 터미널을 엽니다:
+
 - 메뉴: `터미널` → `새 터미널`
 - 단축키: `Ctrl + ~` (백틱)
 
@@ -55,11 +58,13 @@ npm install
 API를 사용하려면 환경 변수를 설정해야 합니다:
 
 1. `.env.example` 파일을 복사하여 `.env` 파일을 만듭니다:
+
 ```bash
 cp .env.example .env
 ```
 
 2. `.env` 파일을 열고 실제 API URL로 수정합니다:
+
 ```
 VITE_API_URL=https://your-actual-api-url.com
 ```
@@ -73,6 +78,7 @@ npm run dev
 ```
 
 ✅ 성공하면 다음과 같은 메시지가 나타납니다:
+
 ```
   VITE v5.x.x  ready in xxx ms
 
@@ -84,6 +90,7 @@ npm run dev
 #### 6단계: 브라우저에서 확인
 
 자동으로 브라우저가 열리지 않으면:
+
 - 브라우저에서 `http://localhost:3000` 을 입력합니다
 - 또는 터미널에서 `Ctrl + 클릭`으로 링크를 엽니다
 
@@ -109,7 +116,7 @@ npm run lint
 IMREAL/
 ├── src/
 │   ├── api/              # API 클라이언트
-│   │   └── base44Client.js
+│   │   └── apiClient.js
 │   ├── components/       # 재사용 가능한 컴포넌트
 │   │   └── ui/
 │   │       └── card.jsx
@@ -143,21 +150,26 @@ IMREAL/
 프로젝트를 더 효율적으로 개발하기 위해 다음 확장 프로그램을 설치하는 것을 권장합니다:
 
 1. **ES7+ React/Redux/React-Native snippets**
+
    - React 코드 스니펫 제공
 
 2. **Tailwind CSS IntelliSense**
+
    - Tailwind 클래스 자동완성
 
 3. **ESLint**
+
    - 코드 품질 검사
 
 4. **Prettier - Code formatter**
+
    - 코드 포맷팅
 
 5. **Auto Rename Tag**
    - HTML/JSX 태그 자동 rename
 
 VSCode에서 확장 프로그램 설치:
+
 1. 왼쪽 사이드바에서 확장 프로그램 아이콘 클릭 (또는 `Ctrl+Shift+X`)
 2. 확장 프로그램 이름 검색
 3. "설치" 버튼 클릭

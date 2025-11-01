@@ -1,10 +1,17 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/apiClient";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Upload, Loader2, CheckCircle, XCircle, Camera } from "lucide-react";
+import {
+  ArrowLeft,
+  Upload,
+  Loader2,
+  CheckCircle,
+  XCircle,
+  Camera,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Detect() {
@@ -29,10 +36,10 @@ export default function Detect() {
     setAnalyzing(true);
     try {
       // Upload file
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await api.integrations.Core.UploadFile({ file });
 
       // Simulate deepfake detection using AI
-      const detection = await base44.integrations.Core.InvokeLLM({
+      const detection = await api.integrations.Core.InvokeLLM({
         prompt: `이 이미지를 분석하여 딥페이크 가능성을 판단해주세요. 
         사람의 얼굴이 있는지, 부자연스러운 부분이 있는지 확인하고,
         딥페이크일 가능성을 0-100 사이의 숫자로 표현해주세요.`,
@@ -43,28 +50,28 @@ export default function Detect() {
             has_face: { type: "boolean" },
             is_fake: { type: "boolean" },
             confidence: { type: "number" },
-            description: { type: "string" }
-          }
-        }
+            description: { type: "string" },
+          },
+        },
       });
 
       const isFake = detection.is_fake || detection.confidence > 60;
 
       // Save to history
-      await base44.entities.DetectionHistory.create({
+      await api.entities.DetectionHistory.create({
         image_url: file_url,
         detection_type: "single",
         result: isFake ? "fake" : "safe",
         confidence: detection.confidence,
         title: file.name,
-        faces_detected: detection.has_face ? 1 : 0
+        faces_detected: detection.has_face ? 1 : 0,
       });
 
       setResult({
         isFake,
         confidence: detection.confidence,
         description: detection.description,
-        imageUrl: file_url
+        imageUrl: file_url,
       });
     } catch (error) {
       console.error("Analysis error:", error);
@@ -73,7 +80,9 @@ export default function Detect() {
       setResult({
         isFake,
         confidence: Math.floor(Math.random() * 40) + (isFake ? 60 : 20),
-        description: isFake ? "이미지에서 의심스러운 패턴이 감지되었습니다." : "정상적인 이미지입니다."
+        description: isFake
+          ? "이미지에서 의심스러운 패턴이 감지되었습니다."
+          : "정상적인 이미지입니다.",
       });
     }
     setAnalyzing(false);
@@ -90,7 +99,10 @@ export default function Detect() {
       {/* Header */}
       <div className="bg-gradient-to-br from-purple-600 via-indigo-600 to-blue-600 text-white pt-12 pb-8 px-6 rounded-b-[2rem]">
         <div className="max-w-md mx-auto">
-          <button onClick={() => navigate(createPageUrl("Home"))} className="mb-6">
+          <button
+            onClick={() => navigate(createPageUrl("Home"))}
+            className="mb-6"
+          >
             <ArrowLeft className="w-6 h-6" />
           </button>
           <h1 className="text-3xl font-bold mb-2">Deepfake 탐지</h1>
@@ -159,11 +171,7 @@ export default function Detect() {
                     <p className="text-gray-700 font-medium">
                       이미지를 분석 중이에요.....
                     </p>
-                    <Button
-                      variant="outline"
-                      onClick={reset}
-                      className="mt-4"
-                    >
+                    <Button variant="outline" onClick={reset} className="mt-4">
                       취소
                     </Button>
                   </div>
@@ -195,7 +203,13 @@ export default function Detect() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
             >
-              <Card className={`p-8 ${result.isFake ? 'bg-gradient-to-br from-red-50 to-orange-50 border-red-200' : 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200'}`}>
+              <Card
+                className={`p-8 ${
+                  result.isFake
+                    ? "bg-gradient-to-br from-red-50 to-orange-50 border-red-200"
+                    : "bg-gradient-to-br from-green-50 to-emerald-50 border-green-200"
+                }`}
+              >
                 <div className="text-center mb-6">
                   {result.isFake ? (
                     <div className="w-20 h-20 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
@@ -227,11 +241,15 @@ export default function Detect() {
                 <Card className="p-4 bg-white mb-4">
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-sm text-gray-600">신뢰도</span>
-                    <span className="font-bold text-lg">{result.confidence}%</span>
+                    <span className="font-bold text-lg">
+                      {result.confidence}%
+                    </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div
-                      className={`h-2 rounded-full ${result.isFake ? 'bg-red-500' : 'bg-green-500'}`}
+                      className={`h-2 rounded-full ${
+                        result.isFake ? "bg-red-500" : "bg-green-500"
+                      }`}
                       style={{ width: `${result.confidence}%` }}
                     />
                   </div>

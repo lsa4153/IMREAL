@@ -1,11 +1,18 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/apiClient";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Upload, Loader2, Download, Droplets, Camera } from "lucide-react";
+import {
+  ArrowLeft,
+  Upload,
+  Loader2,
+  Download,
+  Droplets,
+  Camera,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Watermark() {
@@ -35,10 +42,10 @@ export default function Watermark() {
     setShowTextInput(false);
     try {
       // Upload file
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await api.integrations.Core.UploadFile({ file });
 
       // Simulate watermark process
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       setWatermarkedUrl(file_url);
       setCompleted(true);
@@ -50,7 +57,7 @@ export default function Watermark() {
 
   const downloadWatermarked = () => {
     if (watermarkedUrl) {
-      window.open(watermarkedUrl, '_blank');
+      window.open(watermarkedUrl, "_blank");
     }
   };
 
@@ -68,7 +75,10 @@ export default function Watermark() {
       {/* Header */}
       <div className="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white pt-12 pb-8 px-6 rounded-b-[2rem]">
         <div className="max-w-md mx-auto">
-          <button onClick={() => navigate(createPageUrl("Home"))} className="mb-6">
+          <button
+            onClick={() => navigate(createPageUrl("Home"))}
+            className="mb-6"
+          >
             <ArrowLeft className="w-6 h-6" />
           </button>
           <h1 className="text-3xl font-bold mb-2">워터마크 추가하기</h1>
@@ -97,7 +107,10 @@ export default function Watermark() {
                   className="hidden"
                   id="file-upload-watermark"
                 />
-                <label htmlFor="file-upload-watermark" className="cursor-pointer">
+                <label
+                  htmlFor="file-upload-watermark"
+                  className="cursor-pointer"
+                >
                   <div className="text-center">
                     <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-3xl flex items-center justify-center">
                       <Upload className="w-10 h-10 text-indigo-600" />
@@ -154,11 +167,7 @@ export default function Watermark() {
                     <Droplets className="w-4 h-4 mr-2" />
                     워터마크 추가
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={reset}
-                    className="w-full"
-                  >
+                  <Button variant="outline" onClick={reset} className="w-full">
                     다시 선택
                   </Button>
                 </div>
@@ -184,11 +193,7 @@ export default function Watermark() {
                   <p className="text-gray-700 font-medium">
                     이미지를 분석 중이에요.....
                   </p>
-                  <Button
-                    variant="outline"
-                    onClick={reset}
-                    className="mt-4"
-                  >
+                  <Button variant="outline" onClick={reset} className="mt-4">
                     취소
                   </Button>
                 </div>
@@ -211,9 +216,7 @@ export default function Watermark() {
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">
                     이미지에 워터마크 추가했어요.
                   </h2>
-                  <p className="text-gray-700">
-                    자유롭게 사용해보세요!
-                  </p>
+                  <p className="text-gray-700">자유롭게 사용해보세요!</p>
                 </div>
 
                 {preview && (
@@ -246,11 +249,7 @@ export default function Watermark() {
                     <Download className="w-4 h-4 mr-2" />
                     다운로드
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={reset}
-                    className="w-full"
-                  >
+                  <Button variant="outline" onClick={reset} className="w-full">
                     새로운 이미지 처리
                   </Button>
                 </div>

@@ -1,5 +1,5 @@
 import React from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/apiClient";
 import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { CheckCircle, XCircle, Clock } from "lucide-react";
@@ -9,8 +9,8 @@ import { motion } from "framer-motion";
 
 export default function History() {
   const { data: history, isLoading } = useQuery({
-    queryKey: ['detection-history'],
-    queryFn: () => base44.entities.DetectionHistory.list("-created_date"),
+    queryKey: ["detection-history"],
+    queryFn: () => api.entities.DetectionHistory.list("-created_date"),
     initialData: [],
   });
 
@@ -54,11 +54,11 @@ export default function History() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <Card 
+                <Card
                   className={`p-4 ${
-                    item.result === 'fake' 
-                      ? 'bg-gradient-to-br from-red-50 to-orange-50 border-red-200' 
-                      : 'bg-gradient-to-br from-green-50 to-emerald-50 border-green-200'
+                    item.result === "fake"
+                      ? "bg-gradient-to-br from-red-50 to-orange-50 border-red-200"
+                      : "bg-gradient-to-br from-green-50 to-emerald-50 border-green-200"
                   }`}
                 >
                   <div className="flex items-start gap-4">
@@ -74,20 +74,30 @@ export default function History() {
                         <h3 className="font-bold text-gray-900 truncate">
                           {item.title || "이미지 분석"}
                         </h3>
-                        {item.result === 'fake' ? (
+                        {item.result === "fake" ? (
                           <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
                         ) : (
                           <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
                         )}
                       </div>
-                      <p className={`text-sm font-medium mb-1 ${
-                        item.result === 'fake' ? 'text-red-700' : 'text-green-700'
-                      }`}>
-                        {item.result === 'fake' ? '수상한 이미지' : '안전한 이미지'}
+                      <p
+                        className={`text-sm font-medium mb-1 ${
+                          item.result === "fake"
+                            ? "text-red-700"
+                            : "text-green-700"
+                        }`}
+                      >
+                        {item.result === "fake"
+                          ? "수상한 이미지"
+                          : "안전한 이미지"}
                       </p>
                       <div className="flex items-center justify-between text-xs text-gray-500">
                         <span>
-                          {format(new Date(item.created_date), 'yyyy.MM.dd HH:mm', { locale: ko })}
+                          {format(
+                            new Date(item.created_date),
+                            "yyyy.MM.dd HH:mm",
+                            { locale: ko }
+                          )}
                         </span>
                         {item.confidence && (
                           <span className="font-medium">

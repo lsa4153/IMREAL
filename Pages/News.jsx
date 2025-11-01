@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/apiClient";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search, ExternalLink, Loader2 } from "lucide-react";
@@ -17,7 +17,7 @@ export default function News() {
   const fetchNews = async () => {
     setLoading(true);
     try {
-      const result = await base44.integrations.Core.InvokeLLM({
+      const result = await api.integrations.Core.InvokeLLM({
         prompt: `딥페이크(Deepfake)와 관련된 최신 뉴스 5개를 찾아주세요. 
         각 뉴스에는 제목, 간단한 요약, 날짜가 포함되어야 합니다.
         실제로 존재하는 뉴스처럼 구체적이고 현실적인 내용으로 작성해주세요.`,

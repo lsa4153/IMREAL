@@ -1,10 +1,17 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/apiClient";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Upload, Loader2, Download, Shield, Camera } from "lucide-react";
+import {
+  ArrowLeft,
+  Upload,
+  Loader2,
+  Download,
+  Shield,
+  Camera,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Protect() {
@@ -30,10 +37,10 @@ export default function Protect() {
     setProcessing(true);
     try {
       // Upload file
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      const { file_url } = await api.integrations.Core.UploadFile({ file });
 
       // Simulate protection process (in real app, would add noise)
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       setProtectedUrl(file_url);
       setIsProtected(true);
@@ -45,7 +52,7 @@ export default function Protect() {
 
   const downloadProtected = () => {
     if (protectedUrl) {
-      window.open(protectedUrl, '_blank');
+      window.open(protectedUrl, "_blank");
     }
   };
 
@@ -61,7 +68,10 @@ export default function Protect() {
       {/* Header */}
       <div className="bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-600 text-white pt-12 pb-8 px-6 rounded-b-[2rem]">
         <div className="max-w-md mx-auto">
-          <button onClick={() => navigate(createPageUrl("Home"))} className="mb-6">
+          <button
+            onClick={() => navigate(createPageUrl("Home"))}
+            className="mb-6"
+          >
             <ArrowLeft className="w-6 h-6" />
           </button>
           <h1 className="text-3xl font-bold mb-2">이미지 보호하기</h1>
@@ -130,11 +140,7 @@ export default function Protect() {
                     <p className="text-gray-700 font-medium">
                       이미지를 처리 중이에요.....
                     </p>
-                    <Button
-                      variant="outline"
-                      onClick={reset}
-                      className="mt-4"
-                    >
+                    <Button variant="outline" onClick={reset} className="mt-4">
                       취소
                     </Button>
                   </div>
@@ -175,9 +181,7 @@ export default function Protect() {
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">
                     이미지에 노이즈를 추가했어요.
                   </h2>
-                  <p className="text-gray-700">
-                    자유롭게 사용해보세요!
-                  </p>
+                  <p className="text-gray-700">자유롭게 사용해보세요!</p>
                 </div>
 
                 {preview && (
@@ -210,11 +214,7 @@ export default function Protect() {
                     <Download className="w-4 h-4 mr-2" />
                     다운로드
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={reset}
-                    className="w-full"
-                  >
+                  <Button variant="outline" onClick={reset} className="w-full">
                     새로운 이미지 보호
                   </Button>
                 </div>

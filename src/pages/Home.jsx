@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { api } from "@/api/apiClient";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Card } from "@/components/ui/card";
@@ -18,7 +18,7 @@ export default function Home() {
 
   const loadUser = async () => {
     try {
-      const userData = await base44.auth.me();
+      const userData = await api.auth.me();
       setUser(userData);
     } catch (error) {
       console.log("User not logged in");
@@ -74,10 +74,10 @@ export default function Home() {
             </div>
             <div className="text-right">
               <p className="text-3xl font-light">
-                {currentTime.toLocaleTimeString('ko-KR', { 
-                  hour: '2-digit', 
-                  minute: '2-digit',
-                  hour12: false 
+                {currentTime.toLocaleTimeString("ko-KR", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: false,
                 })}
               </p>
             </div>
@@ -110,7 +110,9 @@ export default function Home() {
             return (
               <Link key={index} to={feature.url}>
                 <Card className="p-6 hover:shadow-xl transition-all duration-300 cursor-pointer border-none bg-white h-full">
-                  <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4`}>
+                  <div
+                    className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-4`}
+                  >
                     <Icon className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="font-bold text-gray-900 mb-2 text-base">
@@ -137,10 +139,12 @@ export default function Home() {
                 <AlertCircle className="w-5 h-5 text-amber-600" />
               </div>
               <div>
-                <h4 className="font-semibold text-gray-900 mb-1">딥페이크란?</h4>
+                <h4 className="font-semibold text-gray-900 mb-1">
+                  딥페이크란?
+                </h4>
                 <p className="text-sm text-gray-600 leading-relaxed">
-                  인공지능을 이용해 사람의 얼굴이나 목소리를 조작한 가짜 콘텐츠입니다. 
-                  IMReal로 여러분의 이미지를 보호하세요.
+                  인공지능을 이용해 사람의 얼굴이나 목소리를 조작한 가짜
+                  콘텐츠입니다. IMReal로 여러분의 이미지를 보호하세요.
                 </p>
               </div>
             </div>
