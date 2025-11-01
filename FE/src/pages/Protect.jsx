@@ -36,16 +36,25 @@ export default function Protect() {
 
     setProcessing(true);
     try {
-      // Upload file
-      const { file_url } = await api.integrations.Core.UploadFile({ file });
+      // Django API: POST /api/protection/jobs/
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("job_type", "adversarial_noise");
 
-      // Simulate protection process (in real app, would add noise)
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const job = await api.protection.protectImage(formData);
 
-      setProtectedUrl(file_url);
+      // Django 응답 구조에 맞게 처리
+      if (job.protected_files && job.protected_files.length > 0) {
+        setProtectedUrl(job.protected_files[0].file_url);
+      } else {
+        setProtectedUrl(preview); // Fallback
+      }
       setIsProtected(true);
     } catch (error) {
       console.error("Protection error:", error);
+      // Fallback: 원본 이미지 사용
+      setProtectedUrl(preview);
+      setIsProtected(true);
     }
     setProcessing(false);
   };

@@ -17,36 +17,16 @@ export default function News() {
   const fetchNews = async () => {
     setLoading(true);
     try {
-      const result = await api.integrations.Core.InvokeLLM({
-        prompt: `딥페이크(Deepfake)와 관련된 최신 뉴스 5개를 찾아주세요. 
-        각 뉴스에는 제목, 간단한 요약, 날짜가 포함되어야 합니다.
-        실제로 존재하는 뉴스처럼 구체적이고 현실적인 내용으로 작성해주세요.`,
-        add_context_from_internet: true,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            articles: {
-              type: "array",
-              items: {
-                type: "object",
-                properties: {
-                  title: { type: "string" },
-                  summary: { type: "string" },
-                  date: { type: "string" },
-                  category: { type: "string" },
-                },
-              },
-            },
-          },
-        },
-      });
-
-      setNews(result.articles || []);
+      // Django API는 뉴스 엔드포인트가 없으므로 임시 데이터 사용
+      // 실제로는 별도 뉴스 API를 사용하거나 Django에 뉴스 앱 추가 필요
+      const articles = await api.news.getLatest();
+      setNews(articles);
     } catch (error) {
       console.error("Failed to fetch news:", error);
       // Fallback demo data
       setNews([
         {
+          id: 1,
           title: "딥페이크 기술, 2025년 급속 발전 예상",
           summary:
             "AI 기술의 발전으로 딥페이크 탐지가 더욱 중요해지고 있습니다. 전문가들은 새로운 보안 기술의 필요성을 강조하고 있습니다.",
@@ -54,6 +34,7 @@ export default function News() {
           category: "기술",
         },
         {
+          id: 2,
           title: "정부, 딥페이크 범죄 강력 대응 방침",
           summary:
             "최근 딥페이크를 이용한 범죄가 증가함에 따라 정부가 강력한 처벌 규정을 마련하고 있습니다.",
@@ -61,11 +42,28 @@ export default function News() {
           category: "사회",
         },
         {
+          id: 3,
           title: "AI 기반 딥페이크 탐지 기술 개발",
           summary:
             "국내 연구팀이 99% 정확도의 딥페이크 탐지 알고리즘을 개발해 주목받고 있습니다.",
           date: "2025.01.10",
           category: "과학",
+        },
+        {
+          id: 4,
+          title: "유명 연예인 딥페이크 영상 유포 사건",
+          summary:
+            "SNS를 통해 유명 연예인의 딥페이크 영상이 유포되어 논란이 되고 있습니다. 경찰이 수사에 나섰습니다.",
+          date: "2025.01.08",
+          category: "연예",
+        },
+        {
+          id: 5,
+          title: "메타, 딥페이크 탐지 AI 무료 공개",
+          summary:
+            "페이스북의 모회사 메타가 자체 개발한 딥페이크 탐지 인공지능을 오픈소스로 공개했습니다.",
+          date: "2025.01.05",
+          category: "기술",
         },
       ]);
     }
@@ -85,7 +83,7 @@ export default function News() {
         <div className="max-w-md mx-auto">
           <h1 className="text-3xl font-bold mb-2">딥페이크 알아보기</h1>
           <p className="text-cyan-100 mb-6">
-            딥페이크 관련 최신 뉴스와 정보를 확인하세요!!!!
+            딥페이크 관련 최신 뉴스와 정보를 확인하세요
           </p>
 
           <div className="relative">

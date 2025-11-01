@@ -35,43 +35,26 @@ export default function Detect() {
 
     setAnalyzing(true);
     try {
-      // Upload file
-      const { file_url } = await api.integrations.Core.UploadFile({ file });
+      // Django API: POST /api/detection/image/
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("analysis_type", "image");
 
-      // Simulate deepfake detection using AI
-      const detection = await api.integrations.Core.InvokeLLM({
-        prompt: `이 이미지를 분석하여 딥페이크 가능성을 판단해주세요. 
-        사람의 얼굴이 있는지, 부자연스러운 부분이 있는지 확인하고,
-        딥페이크일 가능성을 0-100 사이의 숫자로 표현해주세요.`,
-        file_urls: [file_url],
-        response_json_schema: {
-          type: "object",
-          properties: {
-            has_face: { type: "boolean" },
-            is_fake: { type: "boolean" },
-            confidence: { type: "number" },
-            description: { type: "string" },
-          },
-        },
-      });
+      const record = await api.detection.analyzeImage(formData);
 
-      const isFake = detection.is_fake || detection.confidence > 60;
-
-      // Save to history
-      await api.entities.DetectionHistory.create({
-        image_url: file_url,
-        detection_type: "single",
-        result: isFake ? "fake" : "safe",
-        confidence: detection.confidence,
-        title: file.name,
-        faces_detected: detection.has_face ? 1 : 0,
-      });
+      // Django 응답 구조에 맞게 처리
+      const isFake =
+        record.analysis_result === "deepfake" ||
+        record.analysis_result === "suspicious";
 
       setResult({
         isFake,
-        confidence: detection.confidence,
-        description: detection.description,
-        imageUrl: file_url,
+        confidence: record.confidence_score,
+        description: isFake
+          ? "이미지에서 의심스러운 패턴이 감지되었습니다."
+          : "정상적인 이미지입니다.",
+        imageUrl: preview,
+        record_id: record.record_id,
       });
     } catch (error) {
       console.error("Analysis error:", error);

@@ -10,7 +10,7 @@ import { motion } from "framer-motion";
 export default function History() {
   const { data: history, isLoading } = useQuery({
     queryKey: ["detection-history"],
-    queryFn: () => api.entities.DetectionHistory.list("-created_date"),
+    queryFn: () => api.detection.getRecords(), // Django API: GET /api/detection/records/
     initialData: [],
   });
 
@@ -49,32 +49,34 @@ export default function History() {
           <div className="space-y-4">
             {history.map((item, index) => (
               <motion.div
-                key={item.id}
+                key={item.record_id || item.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
                 <Card
                   className={`p-4 ${
-                    item.result === "fake"
+                    item.analysis_result === "deepfake" ||
+                    item.analysis_result === "suspicious"
                       ? "bg-gradient-to-br from-red-50 to-orange-50 border-red-200"
                       : "bg-gradient-to-br from-green-50 to-emerald-50 border-green-200"
                   }`}
                 >
                   <div className="flex items-start gap-4">
-                    {item.image_url && (
+                    {item.original_path && (
                       <img
-                        src={item.image_url}
-                        alt={item.title}
+                        src={item.original_path}
+                        alt={item.file_name}
                         className="w-20 h-20 rounded-lg object-cover"
                       />
                     )}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between mb-2">
                         <h3 className="font-bold text-gray-900 truncate">
-                          {item.title || "이미지 분석"}
+                          {item.file_name || "이미지 분석"}
                         </h3>
-                        {item.result === "fake" ? (
+                        {item.analysis_result === "deepfake" ||
+                        item.analysis_result === "suspicious" ? (
                           <XCircle className="w-5 h-5 text-red-600 flex-shrink-0" />
                         ) : (
                           <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
@@ -82,26 +84,28 @@ export default function History() {
                       </div>
                       <p
                         className={`text-sm font-medium mb-1 ${
-                          item.result === "fake"
+                          item.analysis_result === "deepfake" ||
+                          item.analysis_result === "suspicious"
                             ? "text-red-700"
                             : "text-green-700"
                         }`}
                       >
-                        {item.result === "fake"
+                        {item.analysis_result === "deepfake" ||
+                        item.analysis_result === "suspicious"
                           ? "수상한 이미지"
                           : "안전한 이미지"}
                       </p>
                       <div className="flex items-center justify-between text-xs text-gray-500">
                         <span>
                           {format(
-                            new Date(item.created_date),
+                            new Date(item.created_at),
                             "yyyy.MM.dd HH:mm",
                             { locale: ko }
                           )}
                         </span>
-                        {item.confidence && (
+                        {item.confidence_score && (
                           <span className="font-medium">
-                            신뢰도 {item.confidence}%
+                            신뢰도 {Math.round(item.confidence_score)}%
                           </span>
                         )}
                       </div>

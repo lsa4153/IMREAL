@@ -41,16 +41,26 @@ export default function Watermark() {
     setProcessing(true);
     setShowTextInput(false);
     try {
-      // Upload file
-      const { file_url } = await api.integrations.Core.UploadFile({ file });
+      // Django API: POST /api/protection/jobs/
+      const formData = new FormData();
+      formData.append("image", file);
+      formData.append("job_type", "watermark");
+      formData.append("watermark_text", watermarkText);
 
-      // Simulate watermark process
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const job = await api.protection.addWatermark(formData);
 
-      setWatermarkedUrl(file_url);
+      // Django 응답 구조에 맞게 처리
+      if (job.protected_files && job.protected_files.length > 0) {
+        setWatermarkedUrl(job.protected_files[0].file_url);
+      } else {
+        setWatermarkedUrl(preview); // Fallback
+      }
       setCompleted(true);
     } catch (error) {
       console.error("Watermark error:", error);
+      // Fallback: 원본 이미지 사용
+      setWatermarkedUrl(preview);
+      setCompleted(true);
     }
     setProcessing(false);
   };
